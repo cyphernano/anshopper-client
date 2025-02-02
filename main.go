@@ -6,15 +6,17 @@ import (
 	"anshopper/page/home"
 	"anshopper/page/notifications"
 	"anshopper/page/orders"
+	"anshopper/page/warning"
 	"flag"
+	"log"
+	"os"
+
 	"gioui.org/app"
 	"gioui.org/font/gofont"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/text"
 	"gioui.org/widget/material"
-	"log"
-	"os"
 )
 
 type (
@@ -57,6 +59,7 @@ func loop(w *app.Window) error {
 	router.Register(0, home.New(&router, userID))
 	router.Register(1, orders.New(&router, userID, ords))
 	router.Register(2, notifications.New(&router, userID, notfs))
+	router.Register(3, warning.New(&router, userID))
 
 	for {
 		switch e := w.Event().(type) {
