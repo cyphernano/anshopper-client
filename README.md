@@ -1,5 +1,7 @@
 # Anshopper (Anonymous Shopper)
 
+## [Demonstration](https://cyphernano.github.io/anshopper-client/anshopper_wasm/)
+
 Anshopper is a privacy-focused shopping assistant that allows users to **anonymously purchase products** from any eCommerce store that does **not natively accept cryptocurrencies** like **Nano or Monero**. By acting as an intermediary, Anshopper enables users to shop without exposing their identity while seamlessly integrating with traditional payment methods.  
 
 This client-side application is written in **Go** and interacts with a **PostgreSQL** database using the **PostgREST API client**.
