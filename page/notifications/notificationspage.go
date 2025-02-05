@@ -128,14 +128,19 @@ func genereteQr(qrdata string, gtx C) widget.Image {
 	return im
 }
 
-func (p *Page) formatRSTR(data string) {
-
+func notformat(data string) []string {
 	i := strings.ReplaceAll(data, " \n ", "")
 	ii := strings.ReplaceAll(i, "[{", "")
 	iii := strings.ReplaceAll(ii, "}]", "")
 	iiii := strings.ReplaceAll(iii, "{", "")
 	iiiii := strings.ReplaceAll(iiii, ", ", "; \n")
 	val := strings.Split(iiiii, "},")
+	return val
+}
+
+func (p *Page) populateNotifications(data string) {
+
+	val := notformat(data)
 
 	rows, cols := len(val), 4
 	var sa [][]string
@@ -149,7 +154,6 @@ func (p *Page) formatRSTR(data string) {
 
 	for j := range len(sa) {
 		js := strings.Split(val[j], ",")
-
 		for jj := 0; jj < len(js); jj++ {
 			_, v, _ := strings.Cut(js[jj], ":")
 			sa[j][jj] = strings.ReplaceAll(v, "\"", "")
@@ -168,7 +172,7 @@ func insetTextOfCard(gtx C, txt layout.Widget) D {
 func (p *Page) Layout(gtx C, th *material.Theme) D {
 
 	if rstr != "" {
-		p.formatRSTR(rstr)
+		p.populateNotifications(rstr)
 	}
 
 	p.List.Axis = layout.Vertical
@@ -177,7 +181,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 		if p.syncBtn.Clicked(gtx) {
 			rstr = p.ActSelectDB(uID)
 			if rstr != "" {
-				p.formatRSTR(rstr)
+				p.populateNotifications(rstr)
 			}
 		}
 

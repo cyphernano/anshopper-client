@@ -110,12 +110,18 @@ var matrix [][]string
 var afterSubmit string = "Submit"
 var mtx []string
 
-func (p *Page) formatRSTR(data string) {
+func ordformat(data string) []string {
 	i := strings.ReplaceAll(data, " \n ", "")
 	ii := strings.ReplaceAll(i, "[{", "")
 	iii := strings.ReplaceAll(ii, "}]", "")
 	iiii := strings.ReplaceAll(iii, "{", "")
 	val := strings.Split(iiii, "},")
+	return val
+}
+
+func (p *Page) populateOrders(data string) {
+
+	val := ordformat(data)
 
 	rows, cols := len(val), 6
 	var sa [][]string
@@ -150,7 +156,7 @@ func insetTextOfCard(gtx C, txt layout.Widget) D {
 func (p *Page) Layout(gtx C, th *material.Theme) D {
 
 	if rstr != "" {
-		p.formatRSTR(rstr)
+		p.populateOrders(rstr)
 	}
 
 	p.List.Axis = layout.Vertical
@@ -159,7 +165,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 		if p.syncBtn.Clicked(gtx) {
 			rstr = p.ActSelectDB(uID)
 			if rstr != "" {
-				p.formatRSTR(rstr)
+				p.populateOrders(rstr)
 			}
 		}
 
@@ -173,7 +179,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 				afterSubmit = "Done"
 				rstr = p.ActSelectDB(uID)
 				if rstr != "" {
-					p.formatRSTR(rstr)
+					p.populateOrders(rstr)
 				}
 			} else {
 				afterSubmit = "Fail"
