@@ -1,0 +1,13 @@
+runtime: go123
+service: default
+handlers:
+- url: /.*
+  static_files: anshopper_wasm/\1
+  upload: anshopper_wasm/.*
+
+- url: /
+  static_files: anshopper_wasm/index.html
+  upload: anshopper_wasm/index.html
+
+inbound_services:
+- warmup
