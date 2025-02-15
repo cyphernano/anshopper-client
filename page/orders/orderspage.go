@@ -4,6 +4,7 @@ import (
 	"anshopper/database"
 	"anshopper/icon"
 	"anshopper/page"
+	"image/color"
 	"log"
 	"strconv"
 	"strings"
@@ -148,11 +149,6 @@ func (p *Page) populateOrders(data string) {
 	p.submitBtn = append(p.submitBtn, sbtn...)
 }
 
-func insetTextOfCard(gtx C, txt layout.Widget) D {
-	return layout.Inset{Top: unit.Dp(2), Left: unit.Dp(35)}.
-		Layout(gtx, txt)
-}
-
 func (p *Page) Layout(gtx C, th *material.Theme) D {
 
 	if rstr != "" {
@@ -187,36 +183,34 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 		}
 
 		return layout.Center.Layout(gtx, func(gtx C) D {
+			gtx.Constraints.Max.X = gtx.Dp(unit.Dp(300))
+			hdclr := color.NRGBA{R: 99, G: 35, B: 210, A: 255}
 			return layout.Flex{
-				Axis:      layout.Vertical,
-				Alignment: layout.Middle,
+				Axis: layout.Vertical,
 			}.Layout(gtx,
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					return layout.Flex{
 						Axis:      layout.Horizontal,
-						Alignment: layout.Middle,
-					}.
-						Layout(gtx,
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								order := material.H6(th, "List of orders")
-								return layout.Inset{
-									Top:    unit.Dp(25),
-									Left:   unit.Dp(100),
-									Right:  unit.Dp(0),
-									Bottom: unit.Dp(10),
-								}.Layout(gtx, order.Layout)
-							}),
-							layout.Rigid(func(gtx C) D {
-								sbtn := material.IconButton(th, &p.syncBtn, icon.PlusIcon, "sync")
-								sbtn.Size = unit.Dp(3)
-								return layout.Inset{
-									Top:    unit.Dp(20),
-									Left:   unit.Dp(25),
-									Right:  unit.Dp(0),
-									Bottom: unit.Dp(10),
-								}.Layout(gtx, sbtn.Layout)
-							}),
-						)
+						Alignment: layout.End,
+					}.Layout(gtx,
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							order := material.H6(th, "List of orders")
+							order.Font.Weight = 200
+							order.Color = hdclr
+							order.TextSize = unit.Sp(24)
+							return layout.Inset{
+								Top: unit.Dp(20),
+							}.Layout(gtx, order.Layout)
+						}),
+						layout.Rigid(func(gtx C) D {
+							sbtn := material.IconButton(th, &p.syncBtn, icon.PlusIcon, "sync")
+							sbtn.Size = unit.Dp(1)
+							return layout.Inset{
+								Top:  unit.Dp(20),
+								Left: unit.Dp(50),
+							}.Layout(gtx, sbtn.Layout)
+						}),
+					)
 				}),
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					list.Alignment = layout.Start
@@ -225,8 +219,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 						Layout(gtx, len(matrix), func(gtx C, i int) D {
 							idx := (len(matrix) - 1) - i
 							return layout.Flex{
-								Axis:      layout.Vertical,
-								Alignment: layout.Start,
+								Axis: layout.Vertical,
 							}.
 								Layout(gtx,
 									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
@@ -236,8 +229,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 											order = material.Body1(th, "link: "+val)
 										}
 										return layout.Inset{
-											Top:  unit.Dp(22),
-											Left: unit.Dp(35),
+											Top: unit.Dp(16),
 										}.Layout(gtx,
 											order.Layout,
 										)
@@ -248,7 +240,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 										if val != "" {
 											order = material.Body1(th, "description: "+val)
 										}
-										return insetTextOfCard(gtx, order.Layout)
+										return order.Layout(gtx)
 									}),
 									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 										var order material.LabelStyle
@@ -256,7 +248,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 										if val != "" {
 											order = material.Body1(th, "delivery_address: "+val)
 										}
-										return insetTextOfCard(gtx, order.Layout)
+										return order.Layout(gtx)
 									}),
 									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 										var order material.LabelStyle
@@ -264,7 +256,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 										if val != "" {
 											order = material.Body1(th, "crypto: "+val)
 										}
-										return insetTextOfCard(gtx, order.Layout)
+										return order.Layout(gtx)
 									}),
 									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 										v := matrix[idx][5]
@@ -277,7 +269,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 											order = material.Body1(th, "")
 										}
 										if order.Text != "" {
-											return insetTextOfCard(gtx, order.Layout)
+											return order.Layout(gtx)
 										} else {
 											return nothing
 										}
@@ -304,29 +296,20 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 											}.
 												Layout(gtx,
 													layout.Rigid(func(gtx C) D {
-														txt := material.Label(th, unit.Sp(8), "")
-														return layout.Inset{
-															Top:  unit.Dp(0),
-															Left: unit.Dp(35),
-														}.Layout(gtx, txt.Layout)
-													}),
-													layout.Rigid(func(gtx C) D {
-														// data := p.txid[idx]
-														gtx.Constraints.Max.X = gtx.Dp(unit.Dp(300))
-														return p.txid[idx].Layout(gtx, th, "Put your Transaction ID here")
+														gtx.Constraints.Max.X = gtx.Dp(unit.Dp(200))
+														return p.txid[idx].Layout(gtx, th, "Transaction ID")
 													}),
 													layout.Rigid(func(gtx C) D {
 														if afterSubmit == "Check" {
 															gtx.Disabled()
 														}
 
+														sbtn := material.Button(th, &p.submitBtn[idx], afterSubmit)
 														return layout.Inset{
 															Top:  unit.Dp(10),
-															Left: unit.Dp(6),
+															Left: unit.Dp(2),
 														}.Layout(gtx,
-															material.Button(
-																th, &p.submitBtn[idx], afterSubmit,
-															).Layout,
+															sbtn.Layout,
 														)
 													}),
 												)

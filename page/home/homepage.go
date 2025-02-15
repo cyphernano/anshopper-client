@@ -154,6 +154,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 						layout.Rigid(func(gtx C) D {
 							title := material.Body1(th, "Submit your order")
 							title.Color = hdclr
+							title.Font.Weight = 200
 							title.TextSize = unit.Sp(32)
 							return layout.Inset{Bottom: 14}.
 								Layout(gtx,

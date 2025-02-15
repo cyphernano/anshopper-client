@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"fmt"
 	"image"
+	"image/color"
 	"io"
 	"log"
 	"strings"
@@ -164,11 +165,6 @@ func (p *Page) populateNotifications(data string) {
 	p.sel = append(p.sel, slct...)
 }
 
-func insetTextOfCard(gtx C, txt layout.Widget) D {
-	return layout.Inset{Top: unit.Dp(2), Left: unit.Dp(35)}.
-		Layout(gtx, txt)
-}
-
 func (p *Page) Layout(gtx C, th *material.Theme) D {
 
 	if rstr != "" {
@@ -186,36 +182,35 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 		}
 
 		return layout.Center.Layout(gtx, func(gtx C) D {
+			gtx.Constraints.Max.X = gtx.Dp(unit.Dp(300))
+			hdclr := color.NRGBA{R: 99, G: 35, B: 210, A: 255}
+
 			return layout.Flex{
-				Axis:      layout.Vertical,
-				Alignment: layout.Middle,
+				Axis: layout.Vertical,
 			}.Layout(gtx,
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					return layout.Flex{
 						Axis:      layout.Horizontal,
-						Alignment: layout.Middle,
-						Spacing:   25}.
-						Layout(gtx,
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								order := material.H6(th, "List of notifications")
-								return layout.Inset{
-									Top:    unit.Dp(25),
-									Left:   unit.Dp(100),
-									Right:  unit.Dp(0),
-									Bottom: unit.Dp(10),
-								}.Layout(gtx, order.Layout)
-							}),
-							layout.Rigid(func(gtx C) D {
-								sbtn := material.IconButton(th, &p.syncBtn, icon.PlusIcon, "sync")
-								sbtn.Size = unit.Dp(3)
-								return layout.Inset{
-									Top:    unit.Dp(20),
-									Left:   unit.Dp(25),
-									Right:  unit.Dp(0),
-									Bottom: unit.Dp(10),
-								}.Layout(gtx, sbtn.Layout)
-							}),
-						)
+						Alignment: layout.End,
+					}.Layout(gtx,
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							order := material.H6(th, "List of notifications")
+							order.Font.Weight = 200
+							order.Color = hdclr
+							order.TextSize = unit.Sp(24)
+							return layout.Inset{
+								Top: unit.Dp(20),
+							}.Layout(gtx, order.Layout)
+						}),
+						layout.Rigid(func(gtx C) D {
+							sbtn := material.IconButton(th, &p.syncBtn, icon.PlusIcon, "sync")
+							sbtn.Size = 1
+							return layout.Inset{
+								Top:  unit.Dp(20),
+								Left: unit.Dp(50),
+							}.Layout(gtx, sbtn.Layout)
+						}),
+					)
 				}),
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					list.Alignment = layout.Start
@@ -224,8 +219,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 						Layout(gtx, len(matrix), func(gtx C, i int) D {
 							idx := (len(matrix) - 1) - i
 							return layout.Flex{
-								Axis:      layout.Vertical,
-								Alignment: layout.Start,
+								Axis: layout.Vertical,
 							}.
 								Layout(gtx,
 									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
@@ -234,10 +228,11 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 										val = strings.ReplaceAll(val, ";", "")
 										if val != "" {
 											order = material.Body1(th, "Order: "+val)
+											order.MaxLines = 1
+											order.Truncator = "..."
 										}
 										return layout.Inset{
-											Top:  unit.Dp(16),
-											Left: unit.Dp(35),
+											Top: unit.Dp(16),
 										}.
 											Layout(gtx, order.Layout)
 									}),
@@ -247,7 +242,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 										if val != "" {
 											order = material.Body1(th, "State: "+val)
 										}
-										return insetTextOfCard(gtx, order.Layout)
+										return order.Layout(gtx)
 									}),
 									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 										var order material.LabelStyle
@@ -256,7 +251,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 										if val != "" {
 											order = material.Body1(th, "Amount: "+val)
 										}
-										return insetTextOfCard(gtx, order.Layout)
+										return order.Layout(gtx)
 									}),
 									layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 										var order material.LabelStyle
@@ -266,7 +261,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 											order = material.Body1(th, nv)
 											order.State = &p.sel[idx]
 										}
-										return insetTextOfCard(gtx, order.Layout)
+										return order.Layout(gtx)
 									}),
 									layout.Rigid(func(gtx C) D {
 										var img widget.Image
