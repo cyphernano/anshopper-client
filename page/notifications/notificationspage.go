@@ -201,21 +201,19 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 								return layout.Inset{
 									Top:    unit.Dp(25),
 									Left:   unit.Dp(100),
+									Right:  unit.Dp(0),
 									Bottom: unit.Dp(10),
-									Right:  unit.Dp(100)}.
-									Layout(gtx, order.Layout)
+								}.Layout(gtx, order.Layout)
 							}),
 							layout.Rigid(func(gtx C) D {
 								sbtn := material.IconButton(th, &p.syncBtn, icon.PlusIcon, "sync")
 								sbtn.Size = unit.Dp(3)
 								return layout.Inset{
 									Top:    unit.Dp(20),
-									Left:   unit.Dp(50),
+									Left:   unit.Dp(25),
+									Right:  unit.Dp(0),
 									Bottom: unit.Dp(10),
-									Right:  unit.Dp(2)}.
-									Layout(gtx,
-										sbtn.Layout,
-									)
+								}.Layout(gtx, sbtn.Layout)
 							}),
 						)
 				}),
