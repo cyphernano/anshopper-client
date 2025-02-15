@@ -88,32 +88,35 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 	var str string
 
 	if p.submitButton.Clicked(gtx) {
-		afterSubmit = "Check"
-		if lt := p.linkField.Text(); lt != "" {
-			linkT = lt
-		}
-		if dyt := p.DeliveryField.Text(); dyt != "" {
-			dyt2 := s.ReplaceAll(dyt, ",", " -")
-			DeliveryT = dyt2
-		}
-		if dt := p.DescField.Text(); dt != "" {
-			dt2 := s.ReplaceAll(dt, ",", " -")
-			DescT = dt2
-		}
+
 		if !p.swt.Value {
 			crypto = "nano"
 		} else {
 			crypto = "monero"
 		}
 
-		str = ("uuid: " + uID + ", " +
-			"link: " + linkT + ", " +
-			"description: " + DescT + ", " +
-			"delivery_address: " + DeliveryT + ", " +
-			"crypto: " + crypto + ", " +
-			"txid: ")
+		lt := p.linkField.Text()
+		dyt := p.DeliveryField.Text()
+		dt := p.DescField.Text()
+		if lt != "" && dyt != "" && dt != "" {
+			linkT = lt
 
-		p.db.InsertDB(p.idb, str)
+			dyt2 := s.ReplaceAll(dyt, ",", " -")
+			DeliveryT = dyt2
+
+			dt2 := s.ReplaceAll(dt, ",", " -")
+			DescT = dt2
+
+			str = ("uuid: " + uID + ", " +
+				"link: " + linkT + ", " +
+				"description: " + DescT + ", " +
+				"delivery_address: " + DeliveryT + ", " +
+				"crypto: " + crypto + ", " +
+				"txid: ")
+			p.db.InsertDB(p.idb, str)
+
+			afterSubmit = "Check"
+		}
 	}
 
 	if afterSubmit == "Check" {
