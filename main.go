@@ -1,3 +1,5 @@
+//go:build !wasm
+
 package main
 
 import (
@@ -55,7 +57,7 @@ func loop(w *app.Window) error {
 	if ords != "" {
 		notfs = notfsP.ActSelectDB(userID)
 	}
-	router := page.NewRouter(userID)
+	router := page.NewRouter()
 	router.Register(0, home.New(&router, userID))
 	router.Register(1, orders.New(&router, userID, ords))
 	router.Register(2, notifications.New(&router, userID, notfs))

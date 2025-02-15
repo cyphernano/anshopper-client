@@ -1,7 +1,6 @@
 package page
 
 import (
-	// "anshopper/database"
 	"anshopper/icon"
 	"log"
 	"time"
@@ -28,9 +27,10 @@ type Router struct {
 	*component.ModalLayer
 }
 
-func NewRouter(userID string) Router {
+func NewRouter() Router {
 	modal := component.NewModal()
-	nav := component.NewNav(userID, "This is your ID")
+	nav := component.NewNav("Menu", "")
+
 	modalNav := component.ModalNavFrom(&nav, modal)
 	bar := component.NewAppBar(modal)
 	bar.NavigationIcon = icon.HomeIcon
