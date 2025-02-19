@@ -1,13 +1,16 @@
+//go:build !wasm
+
 package database
 
 import (
 	"fmt"
-	"github.com/dgraph-io/badger/v4"
-	"github.com/google/uuid"
-	postgrest "github.com/supabase-community/postgrest-go"
 	"log"
 	"maps"
 	s "strings"
+
+	"github.com/dgraph-io/badger/v4"
+	"github.com/google/uuid"
+	postgrest "github.com/supabase-community/postgrest-go"
 )
 
 type Export struct {
@@ -54,9 +57,13 @@ const auth string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZm9yZWlnbl
 
 func (d Export) InitDB(ip, port, schema string) *postgrest.Client {
 
-	c := postgrest.NewClient("http://"+ip+":"+port, schema, map[string]string{
-		"Authorization": "Bearer " + auth,
-	})
+	c := postgrest.NewClient(
+		"http://"+ip+":"+port,
+		schema,
+		map[string]string{
+			"Authorization": "Bearer " + auth,
+		},
+	)
 	if c.ClientError != nil {
 		panic(c.ClientError)
 	}
